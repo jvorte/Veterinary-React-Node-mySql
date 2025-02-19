@@ -13,9 +13,29 @@ const Appointments = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitted Data:', formData);
+
+    try {
+        const response = await fetch('http://localhost:5000/appointments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            alert(data.message); // Μήνυμα επιτυχίας
+            setFormData({ ownerName: '', petName: '', service: '', date: '', time: '' }); // Καθαρισμός φόρμας
+        } else {
+            alert('Failed to create appointment');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while submitting the form');
+    }
   };
 
   return (
